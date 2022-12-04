@@ -1,31 +1,19 @@
 # Bookstore大作业开发文档
 程序主要功能系统：```账户系统```、```图书系统```、```日志系统```、```工具系统```
-
 包括
-
 * `main.cpp`
-* 
  ```account.h``` ,```account.cpp```
- 
 ```login.h``` ,```login.cpp```
-
 ```book.h```,```book.cpp```
-
 ```log.h``` ,```log.cpp```
-
 ```blockchain.h```,```blockchain.cpp```
-
 ```error.h```,```error.cpp```
-
 ```transfer.h```,`transfer.cpp`
 
 需要存储文件
 * ```accountNode```,`accountInfo`
-* 
 ```bookNode```,```bookInfo```
-
 ```log```、```finance```
-
 
 ## 账户系统
 包括```account.h``` ,```account.cpp```，```login.h``` ,```login.cpp```：
