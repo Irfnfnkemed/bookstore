@@ -85,7 +85,7 @@
 ## 工具系统
 
 包括```blockchain.h```,```blockchain.cpp```,```error.h```,```error.cpp```,```transfer.h```,`transfer.cpp`：
-* ```blockchain.h```用于处理文件的块状链表结构。包括插入（`insert`）、删除（`erase`）、修改（`change`）、清空（`claar`）等接口函数。
+* ```blockchain.h```用于处理文件的块状链表结构。包括检索（`find`）、插入（`insert`）、删除（`erase`）、修改（`change`）、清空（`claar`）等接口函数。
 * ```error.h```用于接受并处理抛出的错误。
 * `transfer.h`用于识别01串标识符、实现字符串、数字、01串等之间的相互转换。
 
