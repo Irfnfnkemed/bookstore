@@ -101,7 +101,7 @@ void book::select(const char *ISBN) {
         assignStringISBN(toInsert.index, ISBN);
         toInsert.bookName[0] = toInsert.author[0] = toInsert.keyword[0] = '\0';
         toInsert.price_100 = toInsert.stock = 0;
-        ISBNStore.insert(toInsert.index, toInsert, assignISBN);
+        ISBNStore.insertFind(sto, pos, toInsert, assignISBN);
     }
 }
 
@@ -120,6 +120,22 @@ void book::modify(bool token[4], const char *modifyString_0, const char *modifyS
         error("Invalid\n"); //将 ISBN 改为原有的 ISBN，操作失败
     }
     if (token[0] && ISBNStore.find(modifyString_0)) { error("Invalid\n"); }//IBSN重复，操作失败
+    try {//确保正确性
+        if (token[0]) {
+            assignStringISBN(modISBN.index, modifyString_0);
+        }
+        if (token[1]) {
+            assignString(modISBN.bookName, modifyString_1, sizeIndexBookName);
+        }
+        if (token[2]) {
+            assignString(modISBN.author, modifyString_2, sizeIndexAuthor);
+        }
+        if (token[3]) {
+            tmp = parser(modifyString_3);
+            assignString(modISBN.keyword, modifyString_3, sizeIndexKeyword);
+        }
+        if (token[4]) { modISBN.price_100 = modifyPrice_100; }
+    } catch (...) { throw; }//有非法修改，操作失败
     ISBNStore.find(loginPoint->front()->selectISBN, stoISBN, posISBN);
     modISBN = ISBNStore.get(posISBN);//找到目标信息
     ISBNStore.eraseDelete(stoISBN, posISBN);//删去信息

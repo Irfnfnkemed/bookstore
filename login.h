@@ -6,6 +6,8 @@
 #define BOOKSTROREOFWGJ_LOGIN_H
 
 #include <unordered_map>
+#include <string>
+
 
 class users {
 public:
@@ -33,7 +35,7 @@ private:
         }
     };
 
-    std::unordered_map<const char *, int> loginID;//用于记录登录的账户，以及登录次数
+    std::unordered_map<std::string, int> loginID;//用于记录登录的账户，以及登录次数
 
 public:
     nodeLog *head = nullptr;
@@ -43,6 +45,7 @@ public:
 
     //析构函数
     ~login();
+
 
     //clear函数
     //清空所有登录账户

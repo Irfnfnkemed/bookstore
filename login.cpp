@@ -35,7 +35,7 @@ void login::pop() {
     if (head->next == nullptr) { error("Invalid\n"); }
     nodeLog *del = head->next;
     head->next = head->next->next;
-    if (loginID.count(del->data.index) == 0) { loginID.erase(del->data.index); }
+    if (loginID[del->data.index] == 1) { loginID.erase(del->data.index); }
     else { loginID[del->data.index] -= 1; }//更新已经登录的账户数据
     delete del;
 
