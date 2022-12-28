@@ -6,7 +6,7 @@
 * ```login.h``` ,```login.cpp```
 * ```book.h```,```book.cpp```
 * ```log.h``` ,```log.cpp```
-* ```blockchain.h```,`blockchain.cpp`
+* ```blockchain.h```(模板类，实现和声明写在同一文件内)
 * ```error.h```,```error.cpp```
 * ```transfer.h```,`transfer.cpp`
 
@@ -22,7 +22,7 @@
 包括```account.h``` ,```account.cpp```，```login.h``` ,```login.cpp```：
 
 * ```account.h``` 用于实现账户系统的指令操作：
-有接口```su```、```logout```、```register```、```passwd```、```useradd```、```delete ```。
+有主要接口```su```、```logout```、```register```、```passwd```、```useradd```、```delete ```。
 
 * ```login.h``` 用于实现登录栈，定义了登录栈类。能够推入```（push）```、弹出```（pop）```栈顶的账户，能够清空```（clear）```登录栈的内容。具体通过链表来实现。
 
@@ -49,7 +49,7 @@
 包括```book.h``` ,```book.cpp```：
 
 * ```book.h``` 用于实现图书系统的指令操作：
-有接口```show```、```buy```、```select```、```modify```、```import```
+有主要接口```show```、```buy```、```select```、```modify```、```import```
 
 存储方式：
 
@@ -77,8 +77,8 @@
 
 存储方式：
 * 利用两个**二进制文件**```log```,```finance```来存储相关信息。
-对```log```，存放所有操作的信息记录，每种类型的信息都有特定的01串前缀标识符来标记类型。
-对```finance```，存放有关所有交易的信息记录和总的交易笔数。总的交易笔数置于文件开头，长度应为最大长度，有多余的用0补齐。对有交易的信息，只记录每次交易的收入和支出。
+对```log```，存放所有操作的信息记录。
+对```finance```，存放有关所有交易的信息记录。对有交易的信息，只记录每次交易的收入和支出。
 
 指令：```财务记录查询```、```生成日志```
 
@@ -89,11 +89,11 @@
 
 ## 工具系统
 
-包括```blockchain.h```,```blockchain.cpp```,```error.h```,```error.cpp```,```transfer.h```,`transfer.cpp`：
-* ```blockchain.h```用于处理文件的块状链表结构。包括检索（`find`）、插入（`insert`）、删除（`erase`）、修改（`change`）、清空（`clear`）等接口函数。
+包括```blockchain.h```,```error.h```,```error.cpp```,```transfer.h```,`transfer.cpp`：
+* ```blockchain.h```用于处理文件的块状链表结构，用模板类实现。主要包括检索（`find`）、插入（`insert`）、删除（`erase`）、修改（`change`）、清空（`clear`）等接口函数。
 * ```error.h```用于接受并处理抛出的错误。
-* `transfer.h`用于识别01串标识符、实现字符串、数字、01串等之间的相互转换。
+* `transfer.h`用于读入命令并切片，以及识别实现字符串、数字等之间的相互转换。
 
 ## 其他
 
-主程序为带参数的```main```函数，以便于从命令行中读取相应命令并执行对应操作。
+主程序```main```函数，处理对应指令。
