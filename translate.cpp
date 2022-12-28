@@ -6,8 +6,9 @@
 #include "error.h"
 
 void tokenScanner::scan() {
-    //commandLine.clear();
+    commandLine.clear();
     getline(std::cin, commandLine);
+    if (std::cin.eof()) { exit(0); }
     now = 0;
     len = commandLine.length();
 }
@@ -29,14 +30,14 @@ std::string tokenScanner::nextToken() {
     }
 }
 
-void tokenScanner::popQuotations(std::string &token) {
+void popQuotations(std::string &token) {
     if (token.length() <= 2) { error("invalid\n"); }
     if (token[0] != '\"' || token[token.length() - 1] != '\"') { error("invalid\n"); }
     token.pop_back();
     token.erase(0, 1);
 }
 
-void tokenScanner::breakEqual(std::string &token, std::string &tokenNew) {
+void breakEqual(std::string &token, std::string &tokenNew) {
     int i = token.find_first_of('=');
     if (i <= 0 || i >= token.length()) { error("invalid\n"); }
     tokenNew = token.substr(i + 1, token.length() - i - 1);
@@ -79,19 +80,19 @@ void toChar_60(std::string token, char *toChar) {
 
 long toLong_100(std::string token) {
     if (token.length() > 13) { error("invalid\n"); }
-    if (token[token.length() - 3] != '.') { error("invalid\n"); }//输入不合法
     if (token.length() == 0) { return 0; }
     long tmp = 0;
-    for (int i = 0; i < token.length() - 3; ++i) {
+    int flag = 2;//防止记录'.'位置
+    for (int i = 0; i < token.length(); ++i) {
         if (token[i] >= '0' && token[i] <= '9') {
             tmp = tmp * 10 + (token[i] - '0');
+        } else if (token[i] == '.' && i >= token.length() - 3 &&
+                   i > 0 && i < token.length() - 1 && flag == 2) {//防止出现多个'.'，防止'.'出现在最后、两位小数之前
+            flag = i - token.length() + 3;
+            continue;
         } else { error("invalid\n"); }//输入不合法
     }
-    for (int i = token.length() - 2; i < token.length(); ++i) {
-        if (token[i] >= '0' && token[i] <= '9') {
-            tmp = tmp * 10 + (token[i] - '0');
-        } else { error("invalid\n"); }//输入不合法
-    }
+    for (int i = 1; i <= flag; ++i) { tmp *= 10; }
     return tmp;
 }
 

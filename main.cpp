@@ -3,6 +3,7 @@
 #include "account.h"
 #include "book.h"
 #include "translate.h"
+#include "log.h"
 
 /*
 ////用于读取的节点块
@@ -119,13 +120,16 @@ int main() {
 
 
 int main() {
+    //std::freopen("./data/complex/testcase3/2.in", "r", stdin);
+    //std::freopen("out", "w", stdout);
     account accountSystem;
-    book bookSystem(accountSystem.getLogin());
+    log logSystem(accountSystem.getLogin());
+    book bookSystem(accountSystem.getLogin(), &logSystem);
     tokenScanner commandScanner;
-    std::string tmp[10];
-    char tmpChar_20[5][20];
-    char tmpChar_30[5][30];
-    char tmpChar_60[5][60];
+    std::string tmp[11];
+    char tmpChar_20[5][21];
+    char tmpChar_30[5][31];
+    char tmpChar_60[5][61];
     while (1) {
         commandScanner.scan();
         tmp[0] = commandScanner.nextToken();
@@ -189,29 +193,96 @@ int main() {
                 accountSystem.deleting(tmpChar_30[0]);
             } else if (tmp[0] == "show") {
                 tmp[1] = commandScanner.nextToken();
-                commandScanner.breakEqual(tmp[1], tmp[2]);
-                if (commandScanner.nextToken() != "") { error("Invalid\n"); }
-                if (tmp[1] == "") {
-                    bookSystem.show();
+                if (tmp[1] == "") { bookSystem.show(); }
+                else if (tmp[1] == "finance") {
+                    tmp[2] = commandScanner.nextToken();
+                    if (commandScanner.nextToken() != "") { error("Invalid\n"); }
+                    if (tmp[2] == "") { logSystem.show(); }
+                    else { logSystem.show(toInt(tmp[2])); }
                 } else {
-                    if (tmp[1] == "-ISBN") {
-                        if (tmp[2] == "") { error("Invalid\n"); }
-                        toChar_20(tmp[2], tmpChar_20[0]);
-                        bookSystem.showISBN(tmpChar_20[0]);
+                    breakEqual(tmp[1], tmp[2]);
+                    if (commandScanner.nextToken() != "") { error("Invalid\n"); }
+                    if (tmp[1] == "") {
+                        bookSystem.show();
                     } else {
-                        commandScanner.popQuotations(tmp[2]);
-                        toChar_60(tmp[2], tmpChar_60[0]);
-                        if (tmp[1] == "-name") {
-                            bookSystem.showBookName(tmpChar_60[0]);
-                        } else if (tmp[1] == "-author") {
-                            bookSystem.showAuthor(tmpChar_60[0]);
-                        } else if (tmp[1] == "-keyword") {
-                            bookSystem.showKeyword(tmpChar_60[0]);
+                        if (tmp[1] == "-ISBN") {
+                            if (tmp[2] == "") { error("Invalid\n"); }
+                            toChar_20(tmp[2], tmpChar_20[0]);
+                            bookSystem.showISBN(tmpChar_20[0]);
+                        } else {
+                            popQuotations(tmp[2]);
+                            toChar_60(tmp[2], tmpChar_60[0]);
+                            if (tmp[1] == "-name") {
+                                bookSystem.showBookName(tmpChar_60[0]);
+                            } else if (tmp[1] == "-author") {
+                                bookSystem.showAuthor(tmpChar_60[0]);
+                            } else if (tmp[1] == "-keyword") {
+                                bookSystem.showKeyword(tmpChar_60[0]);
+                            } else { error("Invalid\n"); }
+                        }
+                    }
+                }
+            } else if (tmp[0] == "buy") {
+                tmp[1] = commandScanner.nextToken();
+                tmp[2] = commandScanner.nextToken();
+                if (tmp[2] == "" || commandScanner.nextToken() != "") { error("Invalid\n"); }
+                toChar_20(tmp[1], tmpChar_20[0]);
+                bookSystem.buy(tmpChar_20[0], toInt(tmp[2]));
+            } else if (tmp[0] == "select") {
+                tmp[1] = commandScanner.nextToken();
+                if (tmp[1] == "" || commandScanner.nextToken() != "") { error("Invalid\n"); }
+                toChar_20(tmp[1], tmpChar_20[0]);
+                bookSystem.select(tmpChar_20[0]);
+            } else if (tmp[0] == "modify") {
+                tmp[1] = commandScanner.nextToken();
+                tmp[3] = commandScanner.nextToken();
+                tmp[5] = commandScanner.nextToken();
+                tmp[7] = commandScanner.nextToken();
+                tmp[9] = commandScanner.nextToken();
+                if (commandScanner.nextToken() != "") { error("Invalid\n"); }
+                bool judge[5] = {false, false, false, false, false};
+                long price_100 = 0;
+                tmpChar_20[0][0] = tmpChar_60[0][0] =
+                tmpChar_60[1][0] = tmpChar_60[2][0] = '\0';
+                for (int i = 1; i <= 5; ++i) {
+                    if (tmp[2 * i - 1] == "") { break; }
+                    breakEqual(tmp[2 * i - 1], tmp[2 * i]);
+                    if (tmp[2 * i] == "") { error("Invalid\n"); }
+                    if (tmp[2 * i - 1] == "-ISBN") {
+                        if (!judge[0]) { judge[0] = true; }
+                        else { error("Invalid\n"); }
+                        toChar_20(tmp[2 * i], tmpChar_20[0]);
+                    } else if (tmp[2 * i - 1] == "-price") {
+                        if (!judge[4]) { judge[4] = true; }
+                        else { error("Invalid\n"); }
+                        price_100 = toLong_100(tmp[2 * i]);
+                    } else {
+                        popQuotations(tmp[2 * i]);
+                        if (tmp[2 * i - 1] == "-name") {
+                            if (!judge[1]) { judge[1] = true; }
+                            else { error("Invalid\n"); }
+                            toChar_60(tmp[2 * i], tmpChar_60[0]);
+                        } else if (tmp[2 * i - 1] == "-author") {
+                            if (!judge[2]) { judge[2] = true; }
+                            else { error("Invalid\n"); }
+                            toChar_60(tmp[2 * i], tmpChar_60[1]);
+                        } else if (tmp[2 * i - 1] == "-keyword") {
+                            if (!judge[3]) { judge[3] = true; }
+                            else { error("Invalid\n"); }
+                            toChar_60(tmp[2 * i], tmpChar_60[2]);
                         } else { error("Invalid\n"); }
                     }
                 }
+                bookSystem.modify(judge, tmpChar_20[0], tmpChar_60[0],
+                                  tmpChar_60[1], tmpChar_60[2], price_100);
+            } else if (tmp[0] == "import") {
+                tmp[1] = commandScanner.nextToken();
+                tmp[2] = commandScanner.nextToken();
+                if (tmp[2] == "" || commandScanner.nextToken() != "") { error("Invalid\n"); }
+                bookSystem.import(toInt(tmp[1]), toLong_100(tmp[2]));
             } else { error("Invalid\n"); }
         } catch (errorException &ex) { std::cout << ex.getMessage(); }
     }
+
     return 0;
 }

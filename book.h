@@ -7,64 +7,65 @@
 
 #include "account.h"
 #include "error.h"
+#include "log.h"
 #include <iomanip>
 #include <vector>
 
-const size_t sizeIndexISBN = 20;
-const size_t sizeIndexBookName = 60;
-const size_t sizeIndexAuthor = 60;
-const size_t sizeIndexKeyword = 60;
-const size_t numInfoISBN = 50;
-const size_t numInfoBookName = 50;
-const size_t numInfoAuthor = 50;
-const size_t numInfoKeyword = 50;
+const size_t sizeIndexISBN = 21;
+const size_t sizeIndexBookName = 61;
+const size_t sizeIndexAuthor = 61;
+const size_t sizeIndexKeyword = 61;
+const size_t numInfoISBN = 914;
+const size_t numInfoBookName = 914;
+const size_t numInfoAuthor = 914;
+const size_t numInfoKeyword = 710;
 
 //四种存储模式下的信息、节点
 class bookISBN {
 public:
-    char index[20];//以ISBN为索引,ISBN不会重复，无需引入value
-    char bookName[60];//书名
-    char author[60];//作者名
-    char keyword[60];//未切片的关键词
+    char index[sizeIndexISBN];//以ISBN为索引,ISBN不会重复，无需引入value
+    char bookName[sizeIndexBookName];//书名
+    char author[sizeIndexAuthor];//作者名
+    char keyword[sizeIndexKeyword];//未切片的关键词
     long price_100;//100*图书单价
     int stock;//库存数量
 };
 
 class bookBookName {
 public:
-    char index[60];//以书名为索引
-    char value[20];//以ISBN为value
-    char author[60];//作者名
-    char keyword[60];//未切片的关键词
+    char index[sizeIndexBookName];//以书名为索引
+    char value[sizeIndexISBN];//以ISBN为value
+    char author[sizeIndexAuthor];//作者名
+    char keyword[sizeIndexKeyword];//未切片的关键词
     long price_100;//100*图书单价
     int stock;//库存数量
 };
 
 class bookAuthor {
 public:
-    char index[60];//以作者名为索引
-    char value[20];//以ISBN为value
-    char bookName[60];//书名
-    char keyword[60];//未切片的关键词
+    char index[sizeIndexAuthor];//以作者名为索引
+    char value[sizeIndexISBN];//以ISBN为value
+    char bookName[sizeIndexBookName];//书名
+    char keyword[sizeIndexKeyword];//未切片的关键词
     long price_100;//100*图书单价
     int stock;//库存数量
 };
 
 class bookKeyword {
 public:
-    char index[60];//以某一关键词为索引
-    char value[20];//以ISBN为value
-    char bookName[60];//书名
-    char author[60];//作者名
-    char keyword[60];//未切片的关键词
+    char index[sizeIndexKeyword];//以某一关键词为索引
+    char value[sizeIndexISBN];//以ISBN为value
+    char bookName[sizeIndexBookName];//书名
+    char author[sizeIndexAuthor];//作者名
+    char keyword[sizeIndexKeyword];//未切片的关键词
     long price_100;//100*图书单价
     int stock;//库存数量
 };
 
 class nodeISBN {
 public:
-    char low[20];//节点中存储的索引的下限
-    char high[20];//节点中存储的索引的下限
+    char low[sizeIndexISBN];//节点中存储的索引的下限
+    char high[sizeIndexISBN];//节点中存储的索引的下限
     int next;//下一个节点的位置（0-based）
     int prev;//上一个节点的位置（0-based）
     int number;//节点中存储的对应信息的位置（表第几块）（0-based）
@@ -73,8 +74,8 @@ public:
 
 class nodeOther {
 public:
-    char low[60];//节点中存储的索引的下限
-    char high[60];//节点中存储的索引的下限
+    char low[sizeIndexBookName];//节点中存储的索引的下限
+    char high[sizeIndexBookName];//节点中存储的索引的下限
     int next;//下一个节点的位置（0-based）
     int prev;//上一个节点的位置（0-based）
     int number;//节点中存储的对应信息的位置（表第几块）（0-based）
@@ -83,22 +84,22 @@ public:
 
 class infoISBN {
 public:
-    bookISBN infoMem[50];
+    bookISBN infoMem[numInfoISBN];
 };
 
 class infoBookName {
 public:
-    bookBookName infoMem[50];
+    bookBookName infoMem[numInfoBookName];
 };
 
 class infoAuthor {
 public:
-    bookAuthor infoMem[50];
+    bookAuthor infoMem[numInfoAuthor];
 };
 
 class infoKeyword {
 public:
-    bookKeyword infoMem[50];
+    bookKeyword infoMem[numInfoKeyword];
 };
 
 class book {
@@ -118,10 +119,12 @@ private:
     blockchain<nodeOther, infoKeyword, bookKeyword> KeywordStore;
     //指向相关联的登录栈的指针
     login *loginPoint;
+    //指向日志系统的指针
+    log *logPoint;
 public:
 
     //构造函数
-    book(login *loginPoint_);
+    book(login *loginPoint_,log *logPoint_);
 
 //--------------------------------------------------------------------
 
@@ -178,7 +181,8 @@ public:
     //不允许将 ISBN 改为原有的 ISBN
     //最低权限要求{3}
     //数组中前之后依次表示ISBN，bookName，author，keyword，true表要修改，false表不修改
-    void modify(bool token[4], const char *modifyString[4], long modifyPrice_100);
+    void modify(bool token[4], const char *modifyString_0, const char *modifyString_1,
+                const char *modifyString_2, const char *modifyString_3, long modifyPrice_100);
 
 //--------------------------------------------------------------------
 

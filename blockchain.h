@@ -11,7 +11,7 @@
 #include <string>
 
 
-const size_t sizeMax = 4096 * 25;//每个节点对应信息的最大内存，为4096*25字节
+const size_t sizeMax = 4096 * 50;//每个节点对应信息的最大内存，为4096*50字节
 
 template<class node, class info, class everyInfo>
 class blockchain {
@@ -218,12 +218,12 @@ blockchain<node, info, everyInfo>::~blockchain() {
         info infoNow;
         int i = 0;//表节点总数（0-based）
         //清空
-        tmpNode.open("../file/tmpNode", std::ios::out);
-        tmpInfo.open("../file/tmpInfo", std::ios::out);
+        tmpNode.open("tmpNode", std::ios::out);
+        tmpInfo.open("tmpInfo", std::ios::out);
         tmpNode.close();
         tmpInfo.close();
-        tmpNode.open("../file/tmpNode", std::ios::in | std::ios::out);
-        tmpInfo.open("../file/tmpInfo", std::ios::in | std::ios::out);
+        tmpNode.open("tmpNode", std::ios::in | std::ios::out);
+        tmpInfo.open("tmpInfo", std::ios::in | std::ios::out);
         //初始化
         fileNode.seekg(0, std::ios::beg);
         int next;
@@ -271,8 +271,8 @@ blockchain<node, info, everyInfo>::~blockchain() {
         //清空
         tmpNode.close();
         tmpInfo.close();
-        tmpNode.open("../file/tmpNode", std::ios::out);
-        tmpInfo.open("../file/tmpInfo", std::ios::out);
+        tmpNode.open("tmpNode", std::ios::out);
+        tmpInfo.open("tmpInfo", std::ios::out);
         tmpNode.close();
         tmpInfo.close();
     }
@@ -622,11 +622,11 @@ void blockchain<node, info, everyInfo>::insertFind
                     infoNew.infoMem[i] = infoNow.infoMem[i + numInfo / 2 - 1];
                 }
                 //移动要插入信息后的信息
-                for (int i = numInfo / 2 - 1; i >= pos; --i) {
+                for (int i = numInfo / 2 - 2; i >= pos; --i) {
                     infoNow.infoMem[i + 1] = infoNow.infoMem[i];
                 }
                 //插入信息
-                insertFunc(infoNew.infoMem[pos], toInsert);
+                insertFunc(infoNow.infoMem[pos], toInsert);
             }
             //更新新节点
             nodeNew.prev = fileNode.tellg() / sizeof(node);

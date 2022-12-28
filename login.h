@@ -9,9 +9,9 @@
 
 class users {
 public:
-    char index[30];//用户的userID
-    char password[30];
-    char userName[30];
+    char index[31];//用户的userID
+    char password[31];
+    char userName[31];
     int privilege;
 };
 
@@ -21,7 +21,7 @@ private:
     struct nodeLog {
         users data;
         nodeLog *next = nullptr;
-        char selectISBN[60];//表示选中的图书
+        char selectISBN[61];//表示选中的图书
 
         nodeLog() {}
 

@@ -22,11 +22,12 @@ public:
     //在将等号作为分隔符的情况下，空格分隔失效，必须有等号出现，否则视作非法
     std::string nextToken();
 
-    void popQuotations(std::string &token);
-
-    void breakEqual(std::string &token, std::string &tokenNew);
-
 };
+
+void popQuotations(std::string &token);
+
+void breakEqual(std::string &token, std::string &tokenNew);
+
 
 void toChar_20(std::string token, char *toChar);
 

@@ -13,8 +13,8 @@ class login;
 
 class nodeAccount {
 public:
-    char low[30];//节点中存储的索引的下限
-    char high[30];//节点中存储的索引的下限
+    char low[31];//节点中存储的索引的下限
+    char high[31];//节点中存储的索引的下限
     int next;//下一个节点的位置（0-based）
     int prev;//上一个节点的位置（0-based）
     int number;//节点中存储的对应信息的位置（表第几块）（0-based）
@@ -23,15 +23,15 @@ public:
 
 class infoAccount {
 public:
-    users infoMem[60 * 10];
+    users infoMem[2048];
 };
 
 class account {
 private:
     const std::string fileNodeAccountName = "account_node";
     const std::string fileInfoAccountName = "account_info";
-    const size_t sizeIndex = 30;
-    const size_t numInfo = 15;
+    const size_t sizeIndex = 31;
+    const size_t numInfo = 2048;
 
     //用于账户信息的文件操作
     blockchain<nodeAccount, infoAccount, users> accountStore;
