@@ -203,6 +203,8 @@ void book::import(int quantity, long totalCost_100) {
     if (loginPoint->empty()) { error("Invalid\n"); }//无账户登录，操作失败
     if (loginPoint->front()->data.privilege < 3) { error("Invalid\n"); }//权限不足，操作失败
     if (loginPoint->front()->toSelectISBN == -1) { error("Invalid\n"); }//未选择，操作失败
+    if (quantity == 0) { error("Invalid\n"); }//不合法，操作失败
+    if (totalCost_100 == 0) { error("Invalid\n"); }//不合法，操作失败
     int stoISBN, posISBN, stoBookName, posBookName, stoAuthor, posAuthor, stoKeyword, posKeyword;
     bookISBN impISBN;
     bookBookName impBookName;
