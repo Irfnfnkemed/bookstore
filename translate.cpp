@@ -82,17 +82,20 @@ long toLong_100(std::string token) {
     if (token.length() > 13) { error("Invalid\n"); }
     if (token.length() == 0) { return 0; }
     long tmp = 0;
-    int flag = 2;//防止记录'.'位置
+    int flag = -1;//记录'.'是否出现过，以及小数点后位数
     for (int i = 0; i < token.length(); ++i) {
         if (token[i] >= '0' && token[i] <= '9') {
+            if (flag == 2) { continue; }//舍去两位小数后的部分
+            if (flag != -1 && flag < 2) { ++flag; }//增加小数点后位数
             tmp = tmp * 10 + (token[i] - '0');
-        } else if (token[i] == '.' && i >= token.length() - 3 &&
-                   i > 0 && i < token.length() - 1 && flag == 2) {//防止出现多个'.'，防止'.'出现在最后、两位小数之前
-            flag = i - token.length() + 3;
+        } else if (token[i] == '.' && i > 0 && i < token.length() - 1 && flag == -1) {
+            //防止出现多个'.'，防止'.'出现在开始或最后
+            flag = 0;
             continue;
         } else { error("Invalid\n"); }//输入不合法
     }
-    for (int i = 1; i <= flag; ++i) { tmp *= 10; }
+    if (flag == -1) { flag = 0; }//若没有'.'，记录小数后位数
+    for (int i = 1; i <= 2 - flag; ++i) { tmp *= 10; }
     return tmp;
 }
 
