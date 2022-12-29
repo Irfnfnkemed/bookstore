@@ -28,7 +28,7 @@ public:
     char author[sizeIndexAuthor];//作者名
     char keyword[sizeIndexKeyword];//未切片的关键词
     long price_100;//100*图书单价
-    int stock;//库存数量
+    long stock;//库存数量
 };
 
 class bookBookName {
@@ -38,7 +38,7 @@ public:
     char author[sizeIndexAuthor];//作者名
     char keyword[sizeIndexKeyword];//未切片的关键词
     long price_100;//100*图书单价
-    int stock;//库存数量
+    long stock;//库存数量
 };
 
 class bookAuthor {
@@ -48,7 +48,7 @@ public:
     char bookName[sizeIndexBookName];//书名
     char keyword[sizeIndexKeyword];//未切片的关键词
     long price_100;//100*图书单价
-    int stock;//库存数量
+    long stock;//库存数量
 };
 
 class bookKeyword {
@@ -59,7 +59,7 @@ public:
     char author[sizeIndexAuthor];//作者名
     char keyword[sizeIndexKeyword];//未切片的关键词
     long price_100;//100*图书单价
-    int stock;//库存数量
+    long stock;//库存数量
 };
 
 class nodeISBN {
