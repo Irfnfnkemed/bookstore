@@ -21,8 +21,10 @@ int main() {
         tmp[0] = commandScanner.nextToken();
         try {
             if (tmp[0] == "") { continue; }
-            else if (tmp[0] == "exit" || tmp[0] == "quit") { break; }
-            else if (tmp[0] == "su") {
+            else if (tmp[0] == "exit" || tmp[0] == "quit") {
+                if (commandScanner.nextToken() != "") { error("Invalid\n"); }
+                break;
+            } else if (tmp[0] == "su") {
                 tmp[1] = commandScanner.nextToken();
                 tmp[2] = commandScanner.nextToken();
                 if (tmp[1] == "" || commandScanner.nextToken() != "") { error("Invalid\n"); }
@@ -169,6 +171,5 @@ int main() {
             } else { error("Invalid\n"); }
         } catch (errorException &ex) { std::cout << ex.getMessage(); }
     }
-
     return 0;
 }
