@@ -125,7 +125,7 @@ int main() {
                 tmp[5] = commandScanner.nextToken();
                 tmp[7] = commandScanner.nextToken();
                 tmp[9] = commandScanner.nextToken();
-                if (commandScanner.nextToken() != "") { error("Invalid\n"); }
+                if (tmp[1] == "" || commandScanner.nextToken() != "") { error("Invalid\n"); }
                 bool judge[5] = {false, false, false, false, false};
                 long price_100 = 0;
                 tmpChar_20[0][0] = tmpChar_60[0][0] =
