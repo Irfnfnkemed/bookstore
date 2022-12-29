@@ -3,6 +3,7 @@
 //
 
 #include "book.h"
+#include "translate.h"
 
 book::book(login *loginPoint_, log *logPoint_) :
         ISBNStore(nodeNameISBN, infoNameISBN, sizeIndexISBN, numInfoISBN),
@@ -93,8 +94,11 @@ void book::buy(const char *ISBN, int quantity) {
 void book::select(const char *ISBN) {
     if (loginPoint->empty()) { error("Invalid\n"); }//无账户登录，操作失败
     if (loginPoint->front()->data.privilege < 3) { error("Invalid\n"); }//权限不足，操作失败
-    try { assignStringISBN(loginPoint->front()->selectISBN, ISBN); }//记录被选择的ISBN
-    catch (...) { throw; }//若ISBN不合法，抛出错误
+    char selectISBN_20[sizeIndexISBN];
+    try {
+        assignStringISBN(selectISBN_20, ISBN);
+        loginPoint->select(ISBN);//记录被选择的ISBN
+    } catch (...) { throw; }//若ISBN不合法，抛出错误
     int sto, pos;
     if (!ISBNStore.find(ISBN, sto, pos)) {
         bookISBN toInsert;
@@ -109,14 +113,16 @@ void book::modify(bool token[4], const char *modifyString_0, const char *modifyS
                   const char *modifyString_2, const char *modifyString_3, long modifyPrice_100) {
     if (loginPoint->empty()) { error("Invalid\n"); }//无账户登录，操作失败
     if (loginPoint->front()->data.privilege < 3) { error("Invalid\n"); }//权限不足，操作失败
-    if (loginPoint->front()->selectISBN[0] == '\0') { error("Invalid\n"); }//未选择，操作失败
+    if (loginPoint->front()->toSelectISBN == -1) { error("Invalid\n"); }//未选择，操作失败
     bookISBN modISBN;
     bookBookName modBookName;
     bookAuthor modAuthor;
     bookKeyword modKeyword;
+    char selectISBN_20[sizeIndexISBN];
     int stoISBN, posISBN, stoBookName, posBookName, stoAuthor, posAuthor, stoKeyword, posKeyword;
     std::vector<char *> tmp;//切片用
-    if (token[0] && strncmp(modifyString_0, loginPoint->front()->selectISBN, sizeIndexISBN) == 0) {
+    toChar_20(loginPoint->showSelect(), selectISBN_20);
+    if (token[0] && strncmp(modifyString_0, selectISBN_20, sizeIndexISBN) == 0) {
         error("Invalid\n"); //将 ISBN 改为原有的 ISBN，操作失败
     }
     if (token[0] && ISBNStore.find(modifyString_0)) { error("Invalid\n"); }//IBSN重复，操作失败
@@ -136,7 +142,7 @@ void book::modify(bool token[4], const char *modifyString_0, const char *modifyS
         }
         if (token[4]) { modISBN.price_100 = modifyPrice_100; }
     } catch (...) { throw; }//有非法修改，操作失败
-    ISBNStore.find(loginPoint->front()->selectISBN, stoISBN, posISBN);
+    ISBNStore.find(selectISBN_20, stoISBN, posISBN);
     modISBN = ISBNStore.get(posISBN);//找到目标信息
     ISBNStore.eraseDelete(stoISBN, posISBN);//删去信息
     //若原图书有具体信息，需先删去其他存储模式中的信息
@@ -172,6 +178,8 @@ void book::modify(bool token[4], const char *modifyString_0, const char *modifyS
         }
         if (token[4]) { modISBN.price_100 = modifyPrice_100; }
     } catch (...) { throw; }//有非法修改，操作失败
+    //修改登录栈中此时选择的ISBN值（若修改）
+    if (token[0]) { loginPoint->modifySelect(modifyString_0); }
     //重新插入信息(若有对应值)
     ISBNStore.insert(modISBN.index, modISBN, assignISBN);
     if (modISBN.bookName[0] != '\0') {
@@ -194,14 +202,16 @@ void book::modify(bool token[4], const char *modifyString_0, const char *modifyS
 void book::import(int quantity, long totalCost_100) {
     if (loginPoint->empty()) { error("Invalid\n"); }//无账户登录，操作失败
     if (loginPoint->front()->data.privilege < 3) { error("Invalid\n"); }//权限不足，操作失败
-    if (loginPoint->front()->selectISBN[0] == '\0') { error("Invalid\n"); }//未选择，操作失败
+    if (loginPoint->front()->toSelectISBN == -1) { error("Invalid\n"); }//未选择，操作失败
     int stoISBN, posISBN, stoBookName, posBookName, stoAuthor, posAuthor, stoKeyword, posKeyword;
     bookISBN impISBN;
     bookBookName impBookName;
     bookAuthor impAuthor;
     bookKeyword impKeyword;
     std::vector<char *> tmp;
-    ISBNStore.find(loginPoint->front()->selectISBN, stoISBN, posISBN);
+    char selectISBN_20[sizeIndexISBN];
+    toChar_20(loginPoint->showSelect(), selectISBN_20);
+    ISBNStore.find(selectISBN_20, stoISBN, posISBN);
     impISBN = ISBNStore.get(posISBN);//找到目标信息
     //若原书籍有信息，只需修改即可
     impISBN.stock += quantity;
