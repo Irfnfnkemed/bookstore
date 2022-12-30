@@ -97,7 +97,7 @@ std::string login::showSelect() {
 void login::modifySelect(const char *ISBN) {
     if (head->next == nullptr) { error("Invalid\n"); }
     if (head->next->toSelectISBN == -1) { error("Invalid\n"); }
-    selectListISBN[head->next->toSelectISBN] = ISBN;
     selectConverseISBN.erase(selectListISBN[head->next->toSelectISBN]);
+    selectListISBN[head->next->toSelectISBN] = ISBN;
     selectConverseISBN[ISBN] = head->next->toSelectISBN;
 }
