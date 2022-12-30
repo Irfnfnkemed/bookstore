@@ -6,8 +6,9 @@
 #include "error.h"
 
 
-account::account() :
+account::account(logShow *logShowPoint_) :
         accountStore(fileNodeAccountName, fileInfoAccountName, sizeIndex, numInfo) {
+    logShowPoint = logShowPoint_;
     if (accountStore.empty()) {
         users initAccount;//创建店长账户
         char initIndex[5] = {'r', 'o', 'o', 't', '\0'};
@@ -28,6 +29,7 @@ void account::su(const char *userID, const char *password) {
         suAccount = accountStore.get(pos);//找到信息
         if (strcmp(password, suAccount.password) != 0) { error("Invalid\n"); }//密码错误，操作失败
         loginStack.push(suAccount);//添加到登录栈中
+        logShowPoint->storeLog("Account[" + std::string(userID) + "] su the system.\n");//添加日志
     } else { error("Invalid\n"); }//此账户不存在，操作失败
 }
 
@@ -41,12 +43,16 @@ void account::su(const char *userID) {
             error("Invalid\n");//权限不足，操作失败
         }
         loginStack.push(suAccount);//添加到登录栈中
+        logShowPoint->storeLog("Account[" + std::string(userID) + "] su the system.\n");//添加日志
     } else { error("Invalid\n"); }//此账户不存在，操作失败
 }
 
 void account::logout() {
     if (loginStack.empty()) { error("Invalid\n"); }//无账户登录，操作失败
     if (loginStack.front()->data.privilege < 1) { error("Invalid\n"); }//权限不足，操作失败
+    std::string tmp1 = loginStack.front()->data.index, tmp2 = "Account ";
+    logShowPoint->storeLog("Account[" + std::string(loginStack.front()->data.index) +
+                           "] logout the system.\n");//添加日志
     loginStack.pop();
 }
 
@@ -61,6 +67,10 @@ void account::registering(const char *userID, const char *password, const char *
     if (!accountStore.insert(userID, newAccount, assignUsers)) {
         error("Invalid\n");//插入失败，表明userID重复，操作失败
     }
+    //添加日志
+    logShowPoint->storeLog("register new account[" + std::string(userID) + "] with ( ");
+    logShowPoint->storeLog("password[" + std::string(password) + "] name[");
+    logShowPoint->storeLog(std::string(userName) + "] ).\n");
 }
 
 void account::passwd(const char *userID, const char *currentPassword, const char *newPassword) {
@@ -74,6 +84,11 @@ void account::passwd(const char *userID, const char *currentPassword, const char
             try { assignUserID(passwdAccount.password, newPassword); }
             catch (...) { throw; }//newPassword含有不为数字、字母、下划线字符，操作失败
             accountStore.modify(pos, passwdAccount, assignUsers);
+            //添加日志
+            logShowPoint->storeLog("Account[" + std::string(loginStack.front()->data.index) +
+                                   "] passwd account[");
+            logShowPoint->storeLog(std::string(userID) + "] with new password[");
+            logShowPoint->storeLog(std::string(newPassword) + "].\n");
         } else { error("Invalid\n"); }//密码错误，操作失败
     } else { error("Invalid\n"); }//此账户不存在，操作失败
 }
@@ -88,6 +103,11 @@ void account::passwd(const char *userID, const char *newPassword) {
         try { assignUserID(passwdAccount.password, newPassword); }
         catch (...) { throw; }//newPassword含有不为数字、字母、下划线字符，操作失败
         accountStore.modify(pos, passwdAccount, assignUsers);
+        //添加日志
+        logShowPoint->storeLog("Account[" + std::string(loginStack.front()->data.index) +
+                               "] passwd account[");
+        logShowPoint->storeLog(std::string(userID) + "] with new password[");
+        logShowPoint->storeLog(std::string(newPassword) + "].\n");
     } else { error("Invalid\n"); }//此账户不存在，操作失败
 }
 
@@ -106,6 +126,13 @@ void account::useradd(const char *userID, const char *password,
     if (!accountStore.insert(userID, addAccount, assignUsers)) {
         error("Invalid\n");//插入失败，表userID重复，操作失败
     }
+    //添加日志
+    logShowPoint->storeLog("Account[" + std::string(loginStack.front()->data.index) +
+                           "] add new account[");
+    logShowPoint->storeLog(std::string(userID) + "] with ( password[");
+    logShowPoint->storeLog(std::string(password) + "] privilege[");
+    logShowPoint->storeLog(std::to_string(privilege) + "] name[" +
+                           std::string(userName) + "] ).\n");
 }
 
 void account::deleting(const char *userID) {
@@ -113,6 +140,10 @@ void account::deleting(const char *userID) {
     if (loginStack.front()->data.privilege < 7) { error("Invalid\n"); }//权限不足，操作失败
     if (loginStack.find(userID)) { error("Invalid\n"); }//删除账户已登录，操作失败
     if (!accountStore.erase(userID)) { error("Invalid\n"); }//删除失败，表userID不存在，操作失败
+    //添加日志
+    logShowPoint->storeLog("Account[" + std::string(loginStack.front()->data.index) +
+                           "] delete account[");
+    logShowPoint->storeLog(std::string(userID) + "].\n");
 }
 
 inline void account::assignUserID(char *newUserID, const char *userID) {

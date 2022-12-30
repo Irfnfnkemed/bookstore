@@ -28,7 +28,6 @@ void popQuotations(std::string &token);
 
 void breakEqual(std::string &token, std::string &tokenNew);
 
-
 void toChar_20(std::string token, char *toChar);
 
 void toChar_30(std::string token, char *toChar);

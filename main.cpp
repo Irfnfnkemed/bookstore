@@ -8,14 +8,16 @@
 int main() {
     //std::freopen("./data/complex/testcase3/8.in", "r", stdin);
     //std::freopen("out", "w", stdout);
-    account accountSystem;
-    log logSystem(accountSystem.getLogin());
-    book bookSystem(accountSystem.getLogin(), &logSystem);
+    logShow logShowSystem;
+    account accountSystem(&logShowSystem);
+    log logSystem(accountSystem.getLogin(), &logShowSystem);
+    book bookSystem(accountSystem.getLogin(), &logSystem, &logShowSystem);
     tokenScanner commandScanner;
     std::string tmp[11];
     char tmpChar_20[5][21];
     char tmpChar_30[5][31];
     char tmpChar_60[5][61];
+    logShowSystem.storeLog("\nLogin the bookstore system.\n------------------------------\n");
     while (1) {
         commandScanner.scan();
         tmp[0] = commandScanner.nextToken();
@@ -23,6 +25,7 @@ int main() {
             if (tmp[0] == "") { continue; }
             else if (tmp[0] == "exit" || tmp[0] == "quit") {
                 if (commandScanner.nextToken() != "") { error("Invalid\n"); }
+                logShowSystem.storeLog("------------------------------\nExit the bookstore system.\n\n");
                 break;
             } else if (tmp[0] == "su") {
                 tmp[1] = commandScanner.nextToken();
@@ -90,24 +93,20 @@ int main() {
                 } else {
                     breakEqual(tmp[1], tmp[2]);
                     if (commandScanner.nextToken() != "") { error("Invalid\n"); }
-                    if (tmp[1] == "") {
-                        bookSystem.show();
+                    if (tmp[1] == "-ISBN") {
+                        if (tmp[2] == "") { error("Invalid\n"); }
+                        toChar_20(tmp[2], tmpChar_20[0]);
+                        bookSystem.showISBN(tmpChar_20[0]);
                     } else {
-                        if (tmp[1] == "-ISBN") {
-                            if (tmp[2] == "") { error("Invalid\n"); }
-                            toChar_20(tmp[2], tmpChar_20[0]);
-                            bookSystem.showISBN(tmpChar_20[0]);
-                        } else {
-                            popQuotations(tmp[2]);
-                            toChar_60(tmp[2], tmpChar_60[0]);
-                            if (tmp[1] == "-name") {
-                                bookSystem.showBookName(tmpChar_60[0]);
-                            } else if (tmp[1] == "-author") {
-                                bookSystem.showAuthor(tmpChar_60[0]);
-                            } else if (tmp[1] == "-keyword") {
-                                bookSystem.showKeyword(tmpChar_60[0]);
-                            } else { error("Invalid\n"); }
-                        }
+                        popQuotations(tmp[2]);
+                        toChar_60(tmp[2], tmpChar_60[0]);
+                        if (tmp[1] == "-name") {
+                            bookSystem.showBookName(tmpChar_60[0]);
+                        } else if (tmp[1] == "-author") {
+                            bookSystem.showAuthor(tmpChar_60[0]);
+                        } else if (tmp[1] == "-keyword") {
+                            bookSystem.showKeyword(tmpChar_60[0]);
+                        } else { error("Invalid\n"); }
                     }
                 }
             } else if (tmp[0] == "buy") {
@@ -168,6 +167,13 @@ int main() {
                 tmp[2] = commandScanner.nextToken();
                 if (tmp[2] == "" || commandScanner.nextToken() != "") { error("Invalid\n"); }
                 bookSystem.import(toInt(tmp[1]), toLong_100(tmp[2]));
+            } else if (tmp[0] == "log") {
+                if (commandScanner.nextToken() != "") { error("Invalid\n"); }
+                if (accountSystem.getLogin()->front()->data.privilege < 7) { error("Invalid\n"); }
+                logShowSystem.show();
+                logShowSystem.storeLog("Account[" +
+                                       std::string(accountSystem.getLogin()->front()->data.index) +
+                                       "] show the log.\n");
             } else { error("Invalid\n"); }
         } catch (errorException &ex) { std::cout << ex.getMessage(); }
     }

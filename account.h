@@ -5,6 +5,7 @@
 #define BOOKSTROREOFWGJ_ACCOUNT_H
 
 #include "login.h"
+#include "log.h"
 #include "blockchain.h"
 #include <fstream>
 #include <string>
@@ -37,10 +38,12 @@ private:
     blockchain<nodeAccount, infoAccount, users> accountStore;
 
     login loginStack;//用于登录栈
+
+    logShow *logShowPoint;
 public:
 
     //构造函数
-    account();
+    account(logShow *logShowPoint_);
 
 //---------------------------------------------------------------
 

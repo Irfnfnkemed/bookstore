@@ -5,19 +5,22 @@
 #include "book.h"
 #include "translate.h"
 
-book::book(login *loginPoint_, log *logPoint_) :
+book::book(login *loginPoint_, log *logPoint_, logShow *logShowPoint_) :
         ISBNStore(nodeNameISBN, infoNameISBN, sizeIndexISBN, numInfoISBN),
         BookNameStore(nodeNameBookName, infoNameBookName, sizeIndexBookName, numInfoBookName),
         AuthorStore(nodeNameAuthor, infoNameAuthor, sizeIndexAuthor, numInfoAuthor),
         KeywordStore(nodeNameKeyword, infoNameKeyword, sizeIndexKeyword, numInfoKeyword) {
     loginPoint = loginPoint_;
     logPoint = logPoint_;
+    logShowPoint = logShowPoint_;
 }
 
 void book::show() {
     if (loginPoint->empty()) { error("Invalid\n"); }//无账户登录，操作失败
     if (loginPoint->front()->data.privilege < 1) { error("Invalid\n"); }//权限不足，操作失败
     ISBNStore.print(printISBN);
+    logShowPoint->storeLog("Account[" + std::string(loginPoint->front()->data.index) +
+                           "] show all books.\n");//添加日志
 }
 
 void book::showISBN(const char *ISBN) {
@@ -25,6 +28,10 @@ void book::showISBN(const char *ISBN) {
     if (loginPoint->front()->data.privilege < 1) { error("Invalid\n"); }//权限不足，操作失败
     judgeStringISBN(ISBN);
     ISBNStore.print(ISBN, printISBN);
+    //添加日志
+    logShowPoint->storeLog("Account[" + std::string(loginPoint->front()->data.index) +
+                           "] show books with ISBN[");
+    logShowPoint->storeLog(std::string(ISBN) + "].\n");
 }
 
 void book::showBookName(const char *bookName) {
@@ -32,6 +39,10 @@ void book::showBookName(const char *bookName) {
     if (loginPoint->front()->data.privilege < 1) { error("Invalid\n"); }//权限不足，操作失败
     judgeString(bookName, sizeIndexBookName);
     BookNameStore.print(bookName, printBookName);
+    //添加日志
+    logShowPoint->storeLog("Account[" + std::string(loginPoint->front()->data.index) +
+                           "] show books with name[");
+    logShowPoint->storeLog(std::string(bookName) + "].\n");
 }
 
 void book::showAuthor(const char *author) {
@@ -39,6 +50,10 @@ void book::showAuthor(const char *author) {
     if (loginPoint->front()->data.privilege < 1) { error("Invalid\n"); }//权限不足，操作失败
     judgeString(author, sizeIndexAuthor);
     AuthorStore.print(author, printAuthor);
+    //添加日志
+    logShowPoint->storeLog("Account[" + std::string(loginPoint->front()->data.index) +
+                           "] show books with author[");
+    logShowPoint->storeLog(std::string(author) + "].\n");
 }
 
 void book::showKeyword(const char *keyword) {
@@ -47,6 +62,10 @@ void book::showKeyword(const char *keyword) {
     std::vector<char *> tmp = parser(keyword);
     if (tmp.size() != 1) { error("Invalid\n"); }//不为一个关键词，操作失败
     KeywordStore.print(keyword, printKeyword);
+    //添加日志
+    logShowPoint->storeLog("Account[" + std::string(loginPoint->front()->data.index) +
+                           "] show books with keyword[");
+    logShowPoint->storeLog(std::string(keyword) + "].\n");
 }
 
 void book::buy(const char *ISBN, int quantity) {
@@ -88,6 +107,16 @@ void book::buy(const char *ISBN, int quantity) {
             }
         }
         logPoint->add(true, buyISBN.price_100 * quantity);//添加交易记录
+        //添加日志
+        logShowPoint->storeLog("Account[" + std::string(loginPoint->front()->data.index) +
+                               "] buy books( ISBN[");
+        logShowPoint->storeLog(std::string(buyISBN.index) + "] name[");
+        logShowPoint->storeLog(std::string(buyISBN.bookName) + "] author[");
+        logShowPoint->storeLog(std::string(buyISBN.author) + "] keyword[");
+        logShowPoint->storeLog(std::string(buyISBN.keyword) + "] price[");
+        logShowPoint->storeLog(toString(buyISBN.price_100) + "] ) with( sum[" +
+                               std::to_string(quantity) + "] cost[" +
+                               toString(quantity * buyISBN.price_100) + "] ).\n");
     } else { error("Invalid\n"); }//目标书籍不存在，操作失败
 }
 
@@ -100,13 +129,17 @@ void book::select(const char *ISBN) {
         loginPoint->select(ISBN);//记录被选择的ISBN
     } catch (...) { throw; }//若ISBN不合法，抛出错误
     int sto, pos;
-    if (!ISBNStore.find(ISBN, sto, pos)) {
+    if (!ISBNStore.find(ISBN, sto, pos)) {//若原本不存在，创建并插入
         bookISBN toInsert;
         assignStringISBN(toInsert.index, ISBN);
         toInsert.bookName[0] = toInsert.author[0] = toInsert.keyword[0] = '\0';
         toInsert.price_100 = toInsert.stock = 0;
         ISBNStore.insertFind(sto, pos, toInsert, assignISBN);
     }
+    //添加日志
+    logShowPoint->storeLog("Account[" + std::string(loginPoint->front()->data.index) +
+                           "] select books( ISBN[");
+    logShowPoint->storeLog(std::string(ISBN) + "] ).\n");
 }
 
 void book::modify(bool token[4], const char *modifyString_0, const char *modifyString_1,
@@ -125,17 +158,11 @@ void book::modify(bool token[4], const char *modifyString_0, const char *modifyS
     if (token[0] && strncmp(modifyString_0, selectISBN_20, sizeIndexISBN) == 0) {
         error("Invalid\n"); //将 ISBN 改为原有的 ISBN，操作失败
     }
-    if (token[0] && ISBNStore.find(modifyString_0)) { error("Invalid\n"); }//IBSN重复，操作失败
+    if (token[0] && ISBNStore.find(modifyString_0)) { error("Invalid\n"); }//ISBN重复，操作失败
     try {//确保正确性
-        if (token[0]) {
-            assignStringISBN(modISBN.index, modifyString_0);
-        }
-        if (token[1]) {
-            assignString(modISBN.bookName, modifyString_1, sizeIndexBookName);
-        }
-        if (token[2]) {
-            assignString(modISBN.author, modifyString_2, sizeIndexAuthor);
-        }
+        if (token[0]) { assignStringISBN(modISBN.index, modifyString_0); }
+        if (token[1]) { assignString(modISBN.bookName, modifyString_1, sizeIndexBookName); }
+        if (token[2]) { assignString(modISBN.author, modifyString_2, sizeIndexAuthor); }
         if (token[3]) {
             tmp = parser(modifyString_3);
             assignString(modISBN.keyword, modifyString_3, sizeIndexKeyword);
@@ -161,42 +188,60 @@ void book::modify(bool token[4], const char *modifyString_0, const char *modifyS
             KeywordStore.eraseDelete(stoKeyword, posKeyword);
         }
     }
+    //添加日志
+    logShowPoint->storeLog("Account[" + std::string(loginPoint->front()->data.index) +
+                           "] modify books( ISBN[");
+    logShowPoint->storeLog(std::string(modISBN.index) + "] name[");
+    logShowPoint->storeLog(std::string(modISBN.bookName) + "] author[");
+    logShowPoint->storeLog(std::string(modISBN.author) + "] keyword[");
+    logShowPoint->storeLog(std::string(modISBN.keyword) + "] price[");
+    logShowPoint->storeLog(toString(modISBN.price_100) + "] ) with new( ");
     //修改信息
-    try {
-        if (token[0]) {
-            assignStringISBN(modISBN.index, modifyString_0);
-        }
-        if (token[1]) {
-            assignString(modISBN.bookName, modifyString_1, sizeIndexBookName);
-        }
-        if (token[2]) {
-            assignString(modISBN.author, modifyString_2, sizeIndexAuthor);
-        }
-        if (token[3]) {
-            tmp = parser(modifyString_3);
-            assignString(modISBN.keyword, modifyString_3, sizeIndexKeyword);
-        }
-        if (token[4]) { modISBN.price_100 = modifyPrice_100; }
-    } catch (...) { throw; }//有非法修改，操作失败
-    //修改登录栈中此时选择的ISBN值（若修改）
-    if (token[0]) { loginPoint->modifySelect(modifyString_0); }
+    if (token[0]) {
+        assignStringISBN(modISBN.index, modifyString_0);
+        loginPoint->modifySelect(modifyString_0);//修改登录栈中此时选择的ISBN值（若修改）
+    }
+    if (token[1]) { assignString(modISBN.bookName, modifyString_1, sizeIndexBookName); }
+    if (token[2]) { assignString(modISBN.author, modifyString_2, sizeIndexAuthor); }
+    if (token[3]) {
+        tmp = parser(modifyString_3);
+        assignString(modISBN.keyword, modifyString_3, sizeIndexKeyword);
+    }
+    if (token[4]) { modISBN.price_100 = modifyPrice_100; }
     //重新插入信息(若有对应值)
     ISBNStore.insert(modISBN.index, modISBN, assignISBN);
     if (modISBN.bookName[0] != '\0') {
-        assingISBNtoBookName(modBookName, modISBN);
+        assignISBNtoBookName(modBookName, modISBN);
         BookNameStore.insert(modBookName.index, modBookName.value, modBookName, assignBookName);
     }
     if (modISBN.author[0] != '\0') {
-        assingISBNtoAuthor(modAuthor, modISBN);
+        assignISBNtoAuthor(modAuthor, modISBN);
         AuthorStore.insert(modAuthor.index, modAuthor.value, modAuthor, assignAuthor);
     }
     if (modISBN.keyword[0] != '\0') {
         for (int i = 0; i < tmp.size(); ++i) {
-            if (i == 0) { assingISBNtoKeyword(tmp[0], modKeyword, modISBN); }
+            if (i == 0) { assignISBNtoKeyword(tmp[0], modKeyword, modISBN); }
             else { assignString(modKeyword.index, tmp[i], sizeIndexKeyword); }
             KeywordStore.insert(modKeyword.index, modKeyword.value, modKeyword, assignKeyword);
         }
     }
+    //添加日志
+    if (token[0]) {
+        logShowPoint->storeLog("ISBN[" + std::string(modifyString_0) + "] ");
+    }
+    if (token[1]) {
+        logShowPoint->storeLog("name[" + std::string(modifyString_1) + "] ");
+    }
+    if (token[2]) {
+        logShowPoint->storeLog("author[" + std::string(modifyString_2) + "] ");
+    }
+    if (token[3]) {
+        logShowPoint->storeLog("keyword[" + std::string(modifyString_3) + "] ");
+    }
+    if (token[4]) {
+        logShowPoint->storeLog("price[" + toString(modifyPrice_100) + "] ");
+    }
+    logShowPoint->storeLog(").\n");
 }
 
 void book::import(int quantity, long totalCost_100) {
@@ -244,6 +289,16 @@ void book::import(int quantity, long totalCost_100) {
         }
     }
     logPoint->add(false, totalCost_100);//添加交易记录
+    //添加日志
+    logShowPoint->storeLog("Account[" + std::string(loginPoint->front()->data.index) +
+                           "] import books( ISBN[");
+    logShowPoint->storeLog(std::string(impISBN.index) + "] name[");
+    logShowPoint->storeLog(std::string(impISBN.bookName) + "] author[");
+    logShowPoint->storeLog(std::string(impISBN.author) + "] keyword[");
+    logShowPoint->storeLog(std::string(impISBN.keyword) + "] price[");
+    logShowPoint->storeLog(toString(impISBN.price_100) + "] ) with( sum[");
+    logShowPoint->storeLog(std::to_string(quantity) + "] cost[" +
+                           toString(totalCost_100) + "] ).\n");
 }
 
 char tmp[sizeIndexKeyword][sizeIndexKeyword];
@@ -277,7 +332,7 @@ std::vector<char *> book::parser(const char *keyword) {
     }
 }
 
-void book::assingISBNtoBookName(bookBookName &newAssign, const bookISBN &toAssign) {
+void book::assignISBNtoBookName(bookBookName &newAssign, const bookISBN &toAssign) {
     assignString(newAssign.index, toAssign.bookName, sizeIndexBookName);
     assignStringISBN(newAssign.value, toAssign.index);
     assignString(newAssign.author, toAssign.author, sizeIndexAuthor);
@@ -286,7 +341,7 @@ void book::assingISBNtoBookName(bookBookName &newAssign, const bookISBN &toAssig
     newAssign.stock = toAssign.stock;
 }
 
-void book::assingISBNtoAuthor(bookAuthor &newAssign, const bookISBN &toAssign) {
+void book::assignISBNtoAuthor(bookAuthor &newAssign, const bookISBN &toAssign) {
     assignString(newAssign.index, toAssign.author, sizeIndexAuthor);
     assignStringISBN(newAssign.value, toAssign.index);
     assignString(newAssign.bookName, toAssign.bookName, sizeIndexBookName);
@@ -295,7 +350,7 @@ void book::assingISBNtoAuthor(bookAuthor &newAssign, const bookISBN &toAssign) {
     newAssign.stock = toAssign.stock;
 }
 
-void book::assingISBNtoKeyword
+void book::assignISBNtoKeyword
         (const char *key, bookKeyword &newAssign, const bookISBN &toAssign) {
     assignString(newAssign.index, key, sizeIndexKeyword);
     assignStringISBN(newAssign.value, toAssign.index);

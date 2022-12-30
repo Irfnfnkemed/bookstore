@@ -121,10 +121,11 @@ private:
     login *loginPoint;
     //指向日志系统的指针
     log *logPoint;
+    logShow *logShowPoint;
 public:
 
     //构造函数
-    book(login *loginPoint_,log *logPoint_);
+    book(login *loginPoint_, log *logPoint_, logShow *logShowPoint_);
 
 //--------------------------------------------------------------------
 
@@ -292,11 +293,11 @@ private:
         }
     }
 
-    void assingISBNtoBookName(bookBookName &newAssign, const bookISBN &toAssign);
+    void assignISBNtoBookName(bookBookName &newAssign, const bookISBN &toAssign);
 
-    void assingISBNtoAuthor(bookAuthor &newAssign, const bookISBN &toAssign);
+    void assignISBNtoAuthor(bookAuthor &newAssign, const bookISBN &toAssign);
 
-    void assingISBNtoKeyword(const char *key, bookKeyword &newAssign, const bookISBN &toAssign);
+    void assignISBNtoKeyword(const char *key, bookKeyword &newAssign, const bookISBN &toAssign);
 
     //bookName，author，keyword的正确性检查
     inline void judgeString(const char *toString, size_t size) {
