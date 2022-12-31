@@ -6,3 +6,18 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+
+data/
+cmake-bulid-debug/
+account_node
+account_info
+book_ISBN_node
+book_ISBN_info
+book_name_node
+book_name_info
+book_author_node
+book_author_info
+book_keyword_node
+book_keyword_info
+log
+finance
