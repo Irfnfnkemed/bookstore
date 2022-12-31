@@ -95,12 +95,15 @@ long toLong_100(std::string token) {
         } else { error("Invalid\n"); }//输入不合法
     }
     if (flag == -1) { flag = 0; }//若没有'.'，记录小数后位数
+    if (token[0] == '0' && flag == 0 && token.length() > 1) { error("Invalid\n"); }//前导零，非法
+    if (token[0] == '0' && token.length() >= 2 && token[1] != '.') { error("Invalid\n"); }//前导零，非法
     for (int i = 1; i <= 2 - flag; ++i) { tmp *= 10; }
     return tmp;
 }
 
 int toInt(std::string token) {
     if (token.length() > 10) { error("Invalid\n"); }
+    if (token[0] == '0' && token.length() > 1) { error("Invalid\n"); }//前导零，非法
     if (token.length() == 0) { return 0; }
     long tmp = 0;
     for (int i = 0; i < token.length(); ++i) {
