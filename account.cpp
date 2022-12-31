@@ -174,6 +174,6 @@ inline void account::assignUserName(char *newUserName, const char *userName) {
 }
 
 inline bool account::judgePrivilege(int privilege) {
-    if (privilege == 0 || privilege == 1 || privilege == 3 || privilege == 7) { return true; }
+    if (privilege == 1 || privilege == 3 || privilege == 7) { return true; }
     else { return false; }
 }
