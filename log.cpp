@@ -5,6 +5,7 @@
 #include "log.h"
 #include "error.h"
 #include <iomanip>
+#include <cstring>
 
 
 finance::finance(long in_100_, long out_100_) {
@@ -66,15 +67,17 @@ void log::show(int count_) {
     if (loginPoint->empty()) { error("Invalid\n"); }//无账户登录，操作失败
     if (loginPoint->front()->data.privilege < 7) { error("Invalid\n"); }//权限不足，操作失败
     if (count_ > count) { error("Invalid\n"); }//count_大于历史交易总笔数，操作失败
-    finance gmv, gmvBefore;
-    fileFinance.seekg(-sizeof(finance), std::ios::end);
-    fileFinance.read(reinterpret_cast<char *>(&gmv), sizeof(finance));
-    if (count_ == count) { std::cout << gmv; }//相当于输出所有交易额之和，直接输出即可
-    else if (count_ == 0) { std::cout << '\n'; }//输出空行
+    if (count_ == 0) { std::cout << '\n'; }//输出空行
     else {
-        fileFinance.seekg(-sizeof(finance) * (count_ + 1), std::ios::end);
-        fileFinance.read(reinterpret_cast<char *>(&gmvBefore), sizeof(finance));
-        std::cout << (gmv -= gmvBefore);
+        finance gmv, gmvBefore;
+        fileFinance.seekg(-sizeof(finance), std::ios::end);
+        fileFinance.read(reinterpret_cast<char *>(&gmv), sizeof(finance));
+        if (count_ == count) { std::cout << gmv; }//相当于输出所有交易额之和，直接输出即可
+        else {
+            fileFinance.seekg(-sizeof(finance) * (count_ + 1), std::ios::end);
+            fileFinance.read(reinterpret_cast<char *>(&gmvBefore), sizeof(finance));
+            std::cout << (gmv -= gmvBefore);
+        }
     }
     //添加日志
     logShowPoint->storeLog("Account[" + std::string(loginPoint->front()->data.index) +
@@ -111,8 +114,8 @@ logShow::logShow() {
     if (count > 0) {
         fileLog.seekg(-charMax, std::ios::end);
         fileLog.read(tmp, charMax);
-        if (tmp != "------------------------------\nExit the bookstore system.\n\n") {
-            std::string tmpString = "------------------------------\nThe system was unexpectedly exited.\n\n";
+        if (strcmp(tmp, "------------------------------\nExit the bookstore system.\n\n") != 0) {
+            std::string tmpString = "\n------------------------------\nThe system was unexpectedly exited.\n\n";
             for (int i = 0; i < tmpString.length(); ++i) { tmp[i] = tmpString[i]; }
             tmp[tmpString.length()] = '\0';
             fileLog.write(tmp, charMax);
