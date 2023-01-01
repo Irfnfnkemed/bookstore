@@ -4,7 +4,7 @@
 #include "book.h"
 #include "translate.h"
 #include "log.h"
-
+#include <cassert>
 int main() {
     //std::freopen("./data/complex/testcase3/8.in", "r", stdin);
     //std::freopen("out", "w", stdout);
@@ -116,6 +116,7 @@ int main() {
                 toChar_20(tmp[1], tmpChar_20[0]);
                 bookSystem.buy(tmpChar_20[0], toInt(tmp[2]));
             } else if (tmp[0] == "select") {
+                assert(false);
                 tmp[1] = commandScanner.nextToken();
                 if (tmp[1] == "" || commandScanner.nextToken() != "") { error("Invalid\n"); }
                 toChar_20(tmp[1], tmpChar_20[0]);
