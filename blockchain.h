@@ -855,5 +855,4 @@ void blockchain<node, info, everyInfo>::eraseDelete(int sto, int pos) {
     }
 }
 
-
 #endif //BOOKSTROREOFWGJ_BLOCKCHAIN_H

@@ -12,7 +12,6 @@ std::string errorException::getMessage() const {
     return message;
 }
 
-
 void error(std::string message) {
     throw errorException(message);
 }

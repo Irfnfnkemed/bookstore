@@ -360,12 +360,3 @@ void book::assignISBNtoKeyword
     newAssign.price_100 = toAssign.price_100;
     newAssign.stock = toAssign.stock;
 }
-
-
-
-
-
-
-
-
-

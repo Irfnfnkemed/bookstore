@@ -112,5 +112,4 @@ public:
 
 };
 
-
 #endif //BOOKSTROREOFWGJ_LOG_H
