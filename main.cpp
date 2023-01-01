@@ -4,10 +4,10 @@
 #include "book.h"
 #include "translate.h"
 #include "log.h"
-#include <cassert>
+
 int main() {
-    //std::freopen("./data/complex/testcase3/8.in", "r", stdin);
-    //std::freopen("out", "w", stdout);
+//    std::freopen("./111", "r", stdin);
+//    std::freopen("out", "w", stdout);
     logShow logShowSystem;
     account accountSystem(&logShowSystem);
     log logSystem(accountSystem.getLogin(), &logShowSystem);
@@ -28,7 +28,6 @@ int main() {
                 logShowSystem.storeLog("------------------------------\nExit the bookstore system.\n\n");
                 break;
             } else if (tmp[0] == "su") {
-                assert(false);
                 tmp[1] = commandScanner.nextToken();
                 tmp[2] = commandScanner.nextToken();
                 if (tmp[1] == "" || commandScanner.nextToken() != "") { error("Invalid\n"); }
@@ -41,11 +40,9 @@ int main() {
                     accountSystem.su(tmpChar_30[0]);
                 }
             } else if (tmp[0] == "logout") {
-                assert(false);
                 if (commandScanner.nextToken() != "") { error("Invalid\n"); }
                 accountSystem.logout();
             } else if (tmp[0] == "register") {
-                assert(false);
                 tmp[1] = commandScanner.nextToken();
                 tmp[2] = commandScanner.nextToken();
                 tmp[3] = commandScanner.nextToken();
@@ -55,7 +52,6 @@ int main() {
                 toChar_30(tmp[3], tmpChar_30[2]);
                 accountSystem.registering(tmpChar_30[0], tmpChar_30[1], tmpChar_30[2]);
             } else if (tmp[0] == "passwd") {
-                assert(false);
                 tmp[1] = commandScanner.nextToken();
                 tmp[2] = commandScanner.nextToken();
                 tmp[3] = commandScanner.nextToken();
@@ -71,7 +67,6 @@ int main() {
                     accountSystem.passwd(tmpChar_30[0], tmpChar_30[1]);
                 }
             } else if (tmp[0] == "useradd") {
-                assert(false);
                 tmp[1] = commandScanner.nextToken();
                 tmp[2] = commandScanner.nextToken();
                 tmp[3] = commandScanner.nextToken();
@@ -83,13 +78,11 @@ int main() {
                 accountSystem.useradd(tmpChar_30[0], tmpChar_30[1],
                                       toInt(tmp[3]), tmpChar_30[2]);
             } else if (tmp[0] == "delete") {
-                assert(false);
                 tmp[1] = commandScanner.nextToken();
                 if (tmp[1] == "" || commandScanner.nextToken() != "") { error("Invalid\n"); }
                 toChar_30(tmp[1], tmpChar_30[0]);
                 accountSystem.deleting(tmpChar_30[0]);
             } else if (tmp[0] == "show") {
-                assert(false);
                 tmp[1] = commandScanner.nextToken();
                 if (tmp[1] == "") { bookSystem.show(); }
                 else if (tmp[1] == "finance") {
@@ -117,20 +110,17 @@ int main() {
                     }
                 }
             } else if (tmp[0] == "buy") {
-                assert(false);
                 tmp[1] = commandScanner.nextToken();
                 tmp[2] = commandScanner.nextToken();
                 if (tmp[2] == "" || commandScanner.nextToken() != "") { error("Invalid\n"); }
                 toChar_20(tmp[1], tmpChar_20[0]);
                 bookSystem.buy(tmpChar_20[0], toInt(tmp[2]));
             } else if (tmp[0] == "select") {
-                assert(false);
                 tmp[1] = commandScanner.nextToken();
                 if (tmp[1] == "" || commandScanner.nextToken() != "") { error("Invalid\n"); }
                 toChar_20(tmp[1], tmpChar_20[0]);
                 bookSystem.select(tmpChar_20[0]);
             } else if (tmp[0] == "modify") {
-                assert(false);
                 tmp[1] = commandScanner.nextToken();
                 tmp[3] = commandScanner.nextToken();
                 tmp[5] = commandScanner.nextToken();
@@ -173,7 +163,6 @@ int main() {
                 bookSystem.modify(judge, tmpChar_20[0], tmpChar_60[0],
                                   tmpChar_60[1], tmpChar_60[2], price_100);
             } else if (tmp[0] == "import") {
-                assert(false);
                 tmp[1] = commandScanner.nextToken();
                 tmp[2] = commandScanner.nextToken();
                 if (tmp[2] == "" || commandScanner.nextToken() != "") { error("Invalid\n"); }
