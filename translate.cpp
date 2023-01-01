@@ -7,8 +7,8 @@
 
 void tokenScanner::scan() {
     commandLine.clear();
-    getline(std::cin, commandLine);
     if (std::cin.eof()) { commandLine = "exit"; }
+    getline(std::cin, commandLine);
     now = 0;
     len = commandLine.length();
 }
