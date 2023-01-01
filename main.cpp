@@ -28,6 +28,7 @@ int main() {
                 logShowSystem.storeLog("------------------------------\nExit the bookstore system.\n\n");
                 break;
             } else if (tmp[0] == "su") {
+                assert(false);
                 tmp[1] = commandScanner.nextToken();
                 tmp[2] = commandScanner.nextToken();
                 if (tmp[1] == "" || commandScanner.nextToken() != "") { error("Invalid\n"); }
