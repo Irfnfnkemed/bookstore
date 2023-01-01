@@ -8,7 +8,11 @@
 #include <unordered_map>
 #include <string>
 
+/////////////////////////////////
+//login.h主要实现登录栈的功能
+/////////////////////////////////
 
+//账户的信息
 class users {
 public:
     char index[31];//用户的userID
@@ -17,9 +21,10 @@ public:
     int privilege;
 };
 
-//每次登录账户对应的节点
+//login类，用链表实现登录栈
 class login {
 private:
+    //每次登录账户对应的节点
     struct nodeLog {
         users data;
         nodeLog *next = nullptr;
@@ -40,9 +45,9 @@ private:
     std::unordered_map<int, int> selectNumISBN;//用于现在被选择的ISBN的选择次数(key与selectListISBN同)
     std::unordered_map<std::string, int> selectConverseISBN;//selectListISBN的反向
     int cnt = 0;//用于selectListISBN的key值
+    nodeLog *head = nullptr;//头节点
 
 public:
-    nodeLog *head = nullptr;
 
     //构造函数
     login();

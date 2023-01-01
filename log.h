@@ -10,6 +10,11 @@
 #include <iostream>
 #include "login.h"
 
+////////////////////////////////////////
+//log.h主要用于实现日志、交易记录的存储和相关操作
+////////////////////////////////////////
+
+
 //用于记录并生成日志
 
 const size_t charMax = 75;
@@ -24,9 +29,10 @@ private:
 
 public:
 
-    //构造函数 析构函数
+    //构造函数
     logShow();
 
+    //析构函数
     ~logShow();
 
 //---------------------------------------------------------------------
@@ -44,10 +50,6 @@ public:
     //show函数
     //打印日志
     void show();
-
-//---------------------------------------------------------------------
-
-
 };
 
 //toString函数
@@ -57,13 +59,16 @@ std::string toString(long long_100);
 //存储交易总额的前缀和的类
 class finance {
 public:
-    long in_100;
-    long out_100;
 
+    long in_100;//收入*100
+    long out_100;//支出*100
+
+    //构造函数
     finance() {}
 
     finance(long in_100_, long out_100_);
 
+    //重载
     finance &operator-=(const finance &rhs);
 
     friend std::ostream &operator<<(std::ostream &os, finance rhs);
@@ -79,15 +84,11 @@ private:
     logShow *logShowPoint;//日志
 public:
 
-//-----------------------------------------------
-
     //构造函数
     log(login *loginPoint_, logShow *logShowPoint_);
 
     //析构函数
-
     ~log();
-
 
 //-----------------------------------------------
 

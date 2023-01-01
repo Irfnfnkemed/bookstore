@@ -50,7 +50,6 @@ void account::su(const char *userID) {
 void account::logout() {
     if (loginStack.empty()) { error("Invalid\n"); }//无账户登录，操作失败
     if (loginStack.front()->data.privilege < 1) { error("Invalid\n"); }//权限不足，操作失败
-    std::string tmp1 = loginStack.front()->data.index, tmp2 = "Account ";
     logShowPoint->storeLog("Account[" + std::string(loginStack.front()->data.index) +
                            "] logout the system.\n");//添加日志
     loginStack.pop();

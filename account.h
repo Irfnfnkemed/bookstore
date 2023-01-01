@@ -10,8 +10,13 @@
 #include <fstream>
 #include <string>
 
+/////////////////////////////////////////////
+//account.h主要用于实现与账户操作、存储有关的功能
+/////////////////////////////////////////////
+
 class login;
 
+//账户文件节点
 class nodeAccount {
 public:
     char low[31];//节点中存储的索引的下限
@@ -22,11 +27,13 @@ public:
     int stored;//块内存储的信息条数
 };
 
+//账户文件信息块
 class infoAccount {
 public:
     users infoMem[2048];
 };
 
+//account类，实现与账户操作、存储有关的功能
 class account {
 private:
     const std::string fileNodeAccountName = "account_node";

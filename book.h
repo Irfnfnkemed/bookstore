@@ -11,6 +11,10 @@
 #include <iomanip>
 #include <vector>
 
+////////////////////////////////////////
+//book.h主要用于实现书籍的存储和有关操作
+////////////////////////////////////////
+
 const size_t sizeIndexISBN = 21;
 const size_t sizeIndexBookName = 61;
 const size_t sizeIndexAuthor = 61;
@@ -102,6 +106,7 @@ public:
     bookKeyword infoMem[numInfoKeyword];
 };
 
+//book类，实现书籍的存储和有关操作
 class book {
 private:
     const std::string nodeNameISBN = "book_ISBN_node";

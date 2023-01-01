@@ -10,12 +10,14 @@
 #include <cstring>
 #include <string>
 
+//////////////////////////////////////////////////////////////////
+//blockchain.h主要用于实现块状链表的存储、删除、查询、修改、插入等功能
+//////////////////////////////////////////////////////////////////
 
 const size_t sizeMax = 4096 * 50;//每个节点对应信息的最大内存，为4096*50字节
 
 template<class node, class info, class everyInfo>
 class blockchain {
-
 private:
     const size_t sizeIndex;//索引的字节数
     const size_t numInfo;//每个节点存储的最大信息条数(需为偶数，方便操作)
@@ -38,18 +40,20 @@ private:
     //                 该条信息的其他内容（先是用于查找插入的具体信息值(value)）（排列顺序由对应的写入顺序决定）
 
 public:
-//------------------------------------------------------------------
+
     //构造函数
 
     blockchain(std::string fileNodeName_, std::string fileInfoName_,
                size_t sizeIndex_, size_t numInfo_);
 
 //------------------------------------------------------------------
+
     //析构函数
     //功能：由于删除时会在文件中留下无效块，析构时需删掉这些无效块，将文件重新储存
     ~blockchain();
 
 //------------------------------------------------------------------
+
     //find函数：
 
     //功能：利用索引值 或 索引值和具体的值 查找目标是否存在（查找）
@@ -106,6 +110,7 @@ public:
                 void (*modifyFunc)(everyInfo &, const everyInfo &));
 
 //------------------------------------------------------------------
+
     //insert函数:
 
     //功能：根据索引值 或 索引值和具体信息值 插入信息
@@ -163,7 +168,7 @@ public:
     //参数：整数类的要删去信息的块的储存信息条数sto，整数类的要删去信息的位置pos
     void eraseDelete(int sto, int pos);
 
-//------------------------------------------------------------------
+private:
 
     //assignIndex函数
     //功能：索引的复制
@@ -173,10 +178,6 @@ public:
         }
     }
 };
-
-//template<class node, class info, class everyInfo>
-//blockchain<node, info, everyInfo>::blockchain():
-//        fileNodeName(""), fileInfoName(""), numInfo(0), sizeIndex(0) {};
 
 
 template<class node, class info, class everyInfo>

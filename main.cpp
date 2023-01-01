@@ -6,8 +6,6 @@
 #include "log.h"
 
 int main() {
-//    std::freopen("./111", "r", stdin);
-//    std::freopen("out", "w", stdout);
     logShow logShowSystem;
     account accountSystem(&logShowSystem);
     log logSystem(accountSystem.getLogin(), &logShowSystem);
