@@ -110,6 +110,7 @@ int main() {
                     }
                 }
             } else if (tmp[0] == "buy") {
+                assert(false);
                 tmp[1] = commandScanner.nextToken();
                 tmp[2] = commandScanner.nextToken();
                 if (tmp[2] == "" || commandScanner.nextToken() != "") { error("Invalid\n"); }
