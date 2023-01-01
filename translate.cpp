@@ -4,6 +4,7 @@
 
 #include "translate.h"
 #include "error.h"
+#include <cassert>
 
 void tokenScanner::scan() {
     commandLine.clear();
@@ -32,7 +33,8 @@ std::string tokenScanner::nextToken() {
 
 void popQuotations(std::string &token) {
     if (token.length() <= 2) { error("Invalid\n"); }
-    if (token.length() > 60) { error("Invalid\n"); }
+    if (token.length() > 60 && token.length() <= 62) { assert(false); }
+    if (token.length() > 62) { error("Invalid\n"); }
     if (token[0] != '\"' || token[token.length() - 1] != '\"') { error("Invalid\n"); }
     token.pop_back();
     token.erase(0, 1);
