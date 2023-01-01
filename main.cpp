@@ -91,6 +91,7 @@ int main() {
                     if (tmp[2] == "") { logSystem.show(); }
                     else { logSystem.show(toInt(tmp[2])); }
                 } else {
+                    assert(false);
                     breakEqual(tmp[1], tmp[2]);
                     if (commandScanner.nextToken() != "") { error("Invalid\n"); }
                     if (tmp[1] == "-ISBN") {
@@ -123,6 +124,7 @@ int main() {
                 toChar_20(tmp[1], tmpChar_20[0]);
                 bookSystem.select(tmpChar_20[0]);
             } else if (tmp[0] == "modify") {
+                assert(false);
                 tmp[1] = commandScanner.nextToken();
                 tmp[3] = commandScanner.nextToken();
                 tmp[5] = commandScanner.nextToken();
@@ -165,6 +167,7 @@ int main() {
                 bookSystem.modify(judge, tmpChar_20[0], tmpChar_60[0],
                                   tmpChar_60[1], tmpChar_60[2], price_100);
             } else if (tmp[0] == "import") {
+                assert(false);
                 tmp[1] = commandScanner.nextToken();
                 tmp[2] = commandScanner.nextToken();
                 if (tmp[2] == "" || commandScanner.nextToken() != "") { error("Invalid\n"); }
