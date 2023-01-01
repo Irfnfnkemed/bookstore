@@ -52,6 +52,7 @@ int main() {
                 toChar_30(tmp[3], tmpChar_30[2]);
                 accountSystem.registering(tmpChar_30[0], tmpChar_30[1], tmpChar_30[2]);
             } else if (tmp[0] == "passwd") {
+                assert(false);
                 tmp[1] = commandScanner.nextToken();
                 tmp[2] = commandScanner.nextToken();
                 tmp[3] = commandScanner.nextToken();
@@ -67,6 +68,7 @@ int main() {
                     accountSystem.passwd(tmpChar_30[0], tmpChar_30[1]);
                 }
             } else if (tmp[0] == "useradd") {
+                assert(false);
                 tmp[1] = commandScanner.nextToken();
                 tmp[2] = commandScanner.nextToken();
                 tmp[3] = commandScanner.nextToken();
