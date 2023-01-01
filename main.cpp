@@ -78,11 +78,13 @@ int main() {
                 accountSystem.useradd(tmpChar_30[0], tmpChar_30[1],
                                       toInt(tmp[3]), tmpChar_30[2]);
             } else if (tmp[0] == "delete") {
+                assert(false);
                 tmp[1] = commandScanner.nextToken();
                 if (tmp[1] == "" || commandScanner.nextToken() != "") { error("Invalid\n"); }
                 toChar_30(tmp[1], tmpChar_30[0]);
                 accountSystem.deleting(tmpChar_30[0]);
             } else if (tmp[0] == "show") {
+                assert(false);
                 tmp[1] = commandScanner.nextToken();
                 if (tmp[1] == "") { bookSystem.show(); }
                 else if (tmp[1] == "finance") {
@@ -91,7 +93,6 @@ int main() {
                     if (tmp[2] == "") { logSystem.show(); }
                     else { logSystem.show(toInt(tmp[2])); }
                 } else {
-                    assert(false);
                     breakEqual(tmp[1], tmp[2]);
                     if (commandScanner.nextToken() != "") { error("Invalid\n"); }
                     if (tmp[1] == "-ISBN") {
