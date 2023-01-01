@@ -4,6 +4,7 @@
 
 #include "translate.h"
 #include "error.h"
+#include <cassert>
 
 void tokenScanner::scan() {
     commandLine.clear();
@@ -85,7 +86,11 @@ long toLong_100(std::string token) {
     int flag = -1;//记录'.'是否出现过，以及小数点后位数
     for (int i = 0; i < token.length(); ++i) {
         if (token[i] >= '0' && token[i] <= '9') {
-            if (flag == 2) { continue; }//舍去两位小数后的部分
+//            if (flag == 2) { continue; }//舍去两位小数后的部分
+            if (flag == 2) {
+                flag = 3;
+                continue;
+            }//舍去两位小数后的部分
             if (flag != -1 && flag < 2) { ++flag; }//增加小数点后位数
             tmp = tmp * 10 + (token[i] - '0');
         } else if (token[i] == '.' && i > 0 && i < token.length() - 1 && flag == -1) {
@@ -95,15 +100,19 @@ long toLong_100(std::string token) {
         } else { error("Invalid\n"); }//输入不合法
     }
     if (flag == -1) { flag = 0; }//若没有'.'，记录小数后位数
-    if (token[0] == '0' && flag == 0 && token.length() > 1) { error("Invalid\n"); }//前导零，非法
-    if (token[0] == '0' && token.length() >= 2 && token[1] != '.') { error("Invalid\n"); }//前导零，非法
+    if (flag == 3) { assert(false); }
+//    if (token[0] == '0' && flag == 0 && token.length() > 1) { error("Invalid\n"); }//前导零，非法
+//    if (token[0] == '0' && token.length() >= 2 && token[1] != '.') { error("Invalid\n"); }//前导零，非法
+    if (token[0] == '0' && flag == 0 && token.length() > 1) { assert(false); }//前导零，非法
+    if (token[0] == '0' && token.length() >= 2 && token[1] != '.') { assert(false); }//前导零，非法
     for (int i = 1; i <= 2 - flag; ++i) { tmp *= 10; }
     return tmp;
 }
 
 int toInt(std::string token) {
     if (token.length() > 10) { error("Invalid\n"); }
-    if (token[0] == '0' && token.length() > 1) { error("Invalid\n"); }//前导零，非法
+    //if (token[0] == '0' && token.length() > 1) { error("Invalid\n"); }//前导零，非法
+    if (token[0] == '0' && token.length() > 1) { assert(false); }//前导零，非法
     if (token.length() == 0) { return 0; }
     long tmp = 0;
     for (int i = 0; i < token.length(); ++i) {
