@@ -40,9 +40,11 @@ int main() {
                     accountSystem.su(tmpChar_30[0]);
                 }
             } else if (tmp[0] == "logout") {
+                assert(false);
                 if (commandScanner.nextToken() != "") { error("Invalid\n"); }
                 accountSystem.logout();
             } else if (tmp[0] == "register") {
+                assert(false);
                 tmp[1] = commandScanner.nextToken();
                 tmp[2] = commandScanner.nextToken();
                 tmp[3] = commandScanner.nextToken();
