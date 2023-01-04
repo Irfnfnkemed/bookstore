@@ -364,7 +364,7 @@ class logShow://与日志有关
 ## 工具系统
 
 包括```blockchain.h```,```error.h```,```error.cpp```,```transfer.h```,`transfer.cpp`：
-* ```blockchain.h```用于处理文件的块状链表结构，用模板类实现。主要包括检索（`find`）、插入（`insert`）、删除（`erase`）、修改（`change`）、清空（`clear`）等接口函数。
+* ```blockchain.h```用于处理文件的块状链表结构，用模板类实现。主要包括检索（`find`）、插入（`insert`）、删除（`erase`）、修改（`modify`）等接口函数。
 * ```error.h```用于接受并处理抛出的错误。
 * `transfer.h`用于读入命令并切片，以及识别实现字符串、数字等之间的相互转换。
 接口：
